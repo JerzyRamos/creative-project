@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Creative Project</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="styles.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="preload" href="img/idle.gif" as="image">
+    <link rel="preload" href="fonts/pixel.ttf" as="font">
+</head>
+<div id="move">
+  <img src="img/empty.png" id="sprite" onmousedown="mouseDown()">
+</div>
+<body>
+    
+    <body>
+    <div class="font_preload" style="opacity: 0">
+    <span style="font-family: 'pixel';"></span>
+    </div>
+    <div class="bubble" id="bubble">
+        <div class="box" id="box"></div><div class="tri"></div>
+    </div>    
+    
+    
+    <div id="back"></div>
+    <div id="transition"></div>
+    <img id="car"src="img/start.png">
+</body>
+
+
+
+
+<script>
+window.onload = function() {
+    
+    setTimeout(function(){
+        document.getElementById("car").style.opacity=1;
+    }, 500);
+    
+}
+car.onclick = function()
+{
+    let beginTime = Date.now();
+    
+    let timer = setInterval(function()
+    {
+        let timePassed = Date.now() - beginTime;
+        car.style.left = (2*timePassed) + 'px';
+        //backgroundColor.style.left = timePassed / 2 + 'px';
+        document.getElementById("back").style.left = (2*timePassed) + 'px';
+        document.getElementById("transition").style.left = (2*timePassed) + 'px';
+        if (timePassed > 2200) clearInterval(timer);
+    }, 20);
+    starting();
+}
+
+
+dragElement(document.getElementById("move"));
+function dragElement(elmnt) {
+  var newx = 0, newy = 0, oldx = 0, oldy = 0;
+
+elmnt.onmousedown = dragMouseDown;
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    oldx = e.clientX;
+    oldy = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    newx = oldx - e.clientX;
+    newy = oldy - e.clientY;
+    oldx = e.clientX;
+    oldy = e.clientY;
+    var thex = (elmnt.offsetLeft - newx) * (100 / document.documentElement.clientWidth);
+    var they = (elmnt.offsetTop - newy) * (100 / document.documentElement.clientWidth);
+    elmnt.style.top = they + "vw";
+    elmnt.style.left = thex + "vw";
+    document.getElementById("bubble").style.top=they -5+"vw";
+    document.getElementById("bubble").style.left=thex + 8 +"vw";
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+var timeoutId = 0;
+var letgoId = 0;
+var newId =0;
+var held=false;
+var saying= false;
+var num=0;
+var interrupt=false;
+var response=0;
+var still=true;
+var Keys = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+}
+var dx = 0;
+var dy = 0;
+var posnum=0;
+var isDirty=false;
+
+window.mouseup = function(e) {
+    
+    e.preventDefault();
+    held=false;
+};
+
+window.onkeydown = function(e) {
+    
+    var kc = e.keyCode;
+    e.preventDefault();
+    //document.getElementById("test").innerHTML=kc;
+
+    if (kc === 37) Keys.left = true;
+    else if (kc === 38) Keys.up = true;
+    else if (kc === 39) Keys.right = true;
+    else if (kc === 40) Keys.down = true;
+};
+
+
+window.onkeyup = function(e) {
+    var kc = e.keyCode;
+    e.preventDefault();
+
+    if (kc === 37) Keys.left = false;
+    else if (kc === 38) Keys.up = false;
+    else if (kc === 39) Keys.right = false;
+    else if (kc === 40) Keys.down = false;
+    changePos();
+};
+function update() {
+    
+    if (Keys.up) {
+        document.getElementById("move").style.top=parseFloat(document.getElementById("move").style.top,10) - 0.2 +"vw";
+        document.getElementById("bubble").style.top=parseFloat(document.getElementById("bubble").style.top,10) - 0.2 +"vw";
+        isDirty = true;
+    }
+    else if (Keys.down) {
+        document.getElementById("move").style.top=parseFloat(document.getElementById("move").style.top,10) + 0.2 +"vw";
+        document.getElementById("bubble").style.top=parseFloat(document.getElementById("bubble").style.top,10) + 0.2 +"vw";
+        isDirty = true;
+    }
+
+    if (Keys.left) {
+        document.getElementById("move").style.left=parseFloat(document.getElementById("move").style.left,10) - 0.4 +"vw";
+        document.getElementById("bubble").style.left=parseFloat(document.getElementById("bubble").style.left,10) - 0.4 +"vw";
+        isDirty = true;
+    }
+    else if (Keys.right) {
+        document.getElementById("move").style.left=parseFloat(document.getElementById("move").style.left,10) + 0.4 +"vw";
+        document.getElementById("bubble").style.left=parseFloat(document.getElementById("bubble").style.left,10) + 0.4 +"vw";
+        isDirty = true;
+    }
+
+    if (isDirty) render();
+    requestAnimationFrame(update);
+}
+requestAnimationFrame(update);
+
+function render() {
+    changePos();
+    if (parseFloat(document.getElementById("move").style.left,10)>=100) {
+        document.getElementById("move").style.left=-6+"vw";
+        document.getElementById("bubble").style.left=2+"vw";
+        if (num==2) {
+            say("AROUND THE WORLD!!!",2400);
+            num++;
+        }
+        
+    }
+    if (parseFloat(document.getElementById("move").style.left,10)<=-7) {
+        document.getElementById("move").style.left=95+"vw";
+        document.getElementById("bubble").style.left=103+"vw";
+        if (num==2) {
+            say("AROUND THE WORLD!!!",2400);
+            num++;
+        }
+    }
+    
+    isDirty= false;
+}
+
+
+function changePos() {
+    if (num==1&&(posnum==1||posnum==2)) {
+        say("HAHA! I'M SO FAST!!",2400);
+        num++;
+    }
+    
+    if (Keys.right&posnum!=1) {
+        posnum=1;
+        document.getElementById("sprite").src="img/run.gif";
+        document.getElementById("sprite").style.transform="scaleX(1)";
+    }
+    if (Keys.left&posnum!=2) {
+        posnum=2;
+        document.getElementById("sprite").src="img/run.gif";
+        document.getElementById("sprite").style.transform="scaleX(-1)";
+    }
+    if (Keys.up&posnum!=3&posnum!=1&posnum!=2) {
+        posnum=3;
+        document.getElementById("sprite").src="img/run.gif";
+    }
+    if (Keys.down&posnum!=4&posnum!=1&posnum!=2) {
+        posnum=4;
+        document.getElementById("sprite").src="img/run.gif";
+    }
+    if (!(Keys.right||Keys.left||Keys.up||Keys.down)) {
+        posnum=0;
+        document.getElementById("sprite").src="img/idle.gif";
+    }
+    
+    }
+
+
+
+
+
+$('#sprite').on('mousedown', function() {
+    timeoutId = setTimeout(holding, 120);
+    
+}).on('mouseup', function() {
+    clearTimeout(timeoutId);
+    if(response==1) {
+        say("Whew, thank you!");
+    }
+    else if(response==2) {
+        say("Wow, that was close!");
+    }
+    else if(response==3) {
+        say("I saw my life flash before my eyes....",2200);
+    }
+    response=0;
+});
+$('#sprite').on('mouseup', function () {
+    if(held) {
+        held=false;
+        document.getElementById("sprite").src="img/idle.gif";
+    }
+    else if(timeoutId<120) {
+        clicked();
+    }
+});
+
+
+
+function starting() {
+    document.getElementById("sprite").style.opacity=1;
+    clearTimeout();
+    setTimeout(
+    function() {
+    document.getElementById("move").style.top=17+"vw";
+    document.getElementById("move").style.left=43+"vw";
+    document.getElementById("bubble").style.top=12+"vw";
+    document.getElementById("bubble").style.left=51+"vw";
+    document.getElementById("sprite").src='img/start1.gif';
+    }, 1000);
+    setTimeout(
+    function() {
+    document.getElementById("sprite").src='img/idle.gif';
+    say("Hey!");
+    }, 2400);
+    
+    setTimeout(
+    function() {
+    say("Welcome to my website!");
+    }, 4400);
+    
+    setTimeout(
+    function() {
+    say("I can show you what I can do if you click on me.",2000);
+    }, 6400);
+    setTimeout(
+    
+    function() {
+    say("Keep clicking me when you don't know what to do.",2400);
+    }, 9400);
+    
+
+}
+
+function holding() {
+    document.getElementById("sprite").src="img/flying.gif";
+    held=true;
+    if (num==0)num++;
+    letgoId = setTimeout(letgo, 900);
+    
+}
+
+function letgo() {
+    still=true;
+    response=0;
+    clearTimeout(letgoId);
+    if(held){
+        say("Woah, okay let me down now!");
+        response=1;
+    }
+    setTimeout(function(){
+        if(held) {
+            say("I'm gonna die!");
+            response=2;
+        }
+    }, 2000);
+    setTimeout(function(){
+        if(held) {
+            say("AAHHHHHH! LET ME DOWN!");
+            response=3;
+        }
+    }, 4000);
+    
+}
+
+function clicked() {
+    if (num==0) {
+        say("I think dragging me might do something...",2000);
+    }
+    else if (num==1) {
+        say("Maybe try using the arrow keys...",2000);
+        
+    }
+    else if (num==2) {
+        say("Oh! Try to run to that edge there!",2000);
+    }
+    else if (num==3) {
+        say("Hmmm, what else can I do...",2000);
+        num++;
+    }
+    else if (num==4) {
+        say("I think that's it for now...",2000);
+        num++;
+    }
+    else if (num==5) {
+        say("Yeah I've got nothing else",2000);
+        num++;
+    }
+    else if (num==6) {
+        say("Oh stop clicking me now!",2000);
+        num++;
+    }
+    else if (num==7) {
+        say("I said STOP!!",2000);
+        num++;
+    }
+    else if (num==8) {
+        say("I WILL DIE if you keep clicking me!",2000);
+        num++;
+    }
+    else if (num==9) {
+        say("Wow, even that doens't stop you...",2000);
+        num++;
+    }
+    else if (num==10) {
+        say("Well, guess what!!",2000);
+        num++;
+    }
+    else if (num==11) {
+        say("*dies",2000);
+        num++;
+    }
+    else if (num==12) {
+        say("*dead",2000);
+        num++;
+    }
+    else if (num==13) {
+        say("*still dead",2000);
+        num++;
+    }
+    else if (num==14) {
+        say("return 0;",2000);
+        num++;
+    }
+    else if (num==15) {
+        say(". . .",2000);
+    }
+}
+
+function say(words, time=1000) {
+    interrupt=false;
+    if (saying) {
+        interrupt=true;
+        document.getElementById("bubble").style.opacity=0;
+        saying=false;
+        setTimeout(function(){
+                say(words, time);
+        }, 300);
+    }
+    else {
+        saying=true;
+        interrupt=false;
+        document.getElementById("box").innerHTML=words;
+        document.getElementById("bubble").style.opacity=1;
+        saying=true;
+        clearTimeout(newId);
+        if(!interrupt) {
+        newId = setTimeout(function(){
+                document.getElementById("bubble").style.opacity=0;
+                saying=false;
+                interrupt=false;
+            
+        }, time);
+        }
+}
+}
+
+
+
+
+
+</script>
+
+</html>

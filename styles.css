@@ -1,0 +1,93 @@
+body {
+    background-color: #a3bbd2;
+}
+
+html, body {
+  max-width: 100%;
+  max-height:100%;
+}
+
+@font-face {
+  font-family: pixel;
+  src: url("fonts/pixel.ttf") format("opentype");
+}
+
+
+
+ #car{
+    display: block;
+    margin: 0 auto;
+    margin-top: 15%;
+    position: relative;
+    cursor: pointer;
+    height:196px; 
+    width:482px;
+    opacity:0;
+    transition:opacity 0.3s;
+ }
+
+#sprite {
+  opacity:0;
+   width:180px;
+    height:225px;
+}
+
+#back {
+  position: absolute;
+  height:100vh;
+  width:100vw;
+  background:#7fc1f7;
+  top:0px;
+}
+
+#transition {
+  position: absolute;
+  height:100vh;
+  width:100vw;
+  background-image: linear-gradient(to right, #a3bbd2 , #7fc1f7);
+  top:0;
+  margin-left:-100vw;
+}
+
+
+.box {
+    position: absolute;
+    padding: 0px;    
+    border: 15px solid transparent;
+    background:#4a546f;
+    border-radius: 10px;
+    color: white;
+    font-family: pixel;
+    font-size: 1.3vw;
+    bottom:1vw;
+    text-align:center;
+}
+.tri {
+    width:0;
+    height:0;
+    border-left: 30px solid #4a546f;
+    border-right: 0;
+    border-top:0;
+    border-bottom: 30px solid transparent;
+    position: absolute;
+    margin-top:30px;
+    bottom:0;
+}
+.bubble {
+  position:absolute;
+  opacity:0;
+  transition: opacity 0.3s;
+  height:15vh;
+  width:13vw;
+}
+
+
+
+
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+#move {
+    position: absolute;
+}
